@@ -1,32 +1,21 @@
 const apiUrl = 'https://interview-api.sbly.com';
 const performanceEndpoint = '/ad-insights';
-const budgetEndpoint = '/ad/AD_ID';
 const accessToken = 'SHAREABLY_SECRET_TOKEN';
-let date = '2020-01-01';
-let metrics = 'spend,impressions';
-
-let url = constructUrl(apiUrl, performanceEndpoint, {
-    accessToken: accessToken,
-    date: date,
-    metrics: metrics
-});
-console.log(url);
-
-let options = {
+const adFetchOptions = {
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
     }
 };
 
-fetch(url, options)
-    .then(response => {
-        console.log(response);
-    })
-    .catch(error => {
-        console.log(error);
-    });
+let date = '2020-01-01';
+let metrics = 'spend,impressions';
 
-function constructUrl(base, endpoint, params) {
+getAdInsights(date, metrics).then(a => console.log(a));
+getAdBudget('bdd60126-d19a-69d2-7d10-b92955b4ee49').then(a => console.log(a));
+
+// Helper Functions -------------------------------------------------------------------------------
+
+function constructUrl(base, endpoint, params = {}) {
     let url = base + endpoint;
 
     let isFirst = true;
@@ -36,4 +25,27 @@ function constructUrl(base, endpoint, params) {
     }
 
     return url;
+}
+
+function getAdInsights(date, metrics) {
+    let url = constructUrl(apiUrl, performanceEndpoint, {
+        accessToken: accessToken,
+        date: date,
+        metrics: metrics
+    });
+
+    return fetch(url, adFetchOptions)
+        .then(response => response.json())
+        .catch(error => console.log(error));
+}
+
+function getAdBudget(id) {
+    let url = constructUrl(apiUrl, '/ad/' + id, {
+        accessToken: accessToken
+    });
+
+    return fetch(url, adFetchOptions)
+        .then(response => response.json())
+        .then(result => result.budget)
+        .catch(error => console.log(error));
 }
