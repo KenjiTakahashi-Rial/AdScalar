@@ -1,26 +1,31 @@
-import { adInsights, currentBudget, dates } from 'adApi';
+import { adInsights } from './adApi.js';
+import { currentBudget } from './adApi.js';
+import { dates } from './adApi.js';
 
 async function weightedAverages() {
     let dateAdInsights = [];
     let weightedAvgs = {};
     let metrics = 'spend,revenue';
 
-    for (let i = 0; i < dates.length; i++) {
-        dateAdInsights.push(await adInsights(dates[i], metrics));
+    for (let date of dates) {
+        dateAdInsights.push(await adInsights(date, metrics));
     }
 
     let numAds = dateAdInsights[0].length;
 
     for (let i = 0; i < numAds; i++) {
-        let weightedAvg = 0;
+        let dividend = 0;
+        let divisor = 0;
 
         for (let j = 0; j < dates.length; j++) {
             let ad = dateAdInsights[j][i];
-            weightedAvg += profitMargin(ad) * ad.spend * recencyWeight(j);
+            let weight = ad.spend * recencyWeight(j);
+            divisor += weight;
+            dividend += profitMargin(ad) * weight;
         }
 
         let id = dateAdInsights[0][i].id;
-        weightedAvgs[id] = weightedAvg;
+        weightedAvgs[id] = dividend / divisor;
     }
 
     return weightedAvgs;
@@ -38,10 +43,19 @@ async function nextBudgets() {
     let nextBudgets = {};
     let weightedAvgs = await weightedAverages();
 
-    for (id in weightedAvgs) {
-        console.log(`id: ${id}, avg: ${weightedAvgs[id]}`);
-        nextBudgets[id] = (1 + weightedAvgs[id]) * (await currentBudget(id));
+    for (let id in weightedAvgs) {
+        let weighted = weightedAvgs[id];
+        let current = await currentBudget(id);
+        let proposed = (1 + weighted) * current;
+
+        nextBudgets[id] = {
+            weightedProfitMargin: weighted.toFixed(2),
+            currentBudget: current.toFixed(2),
+            proposedBudget: proposed.toFixed(2)
+        };
     }
 
     return nextBudgets;
 }
+
+export default nextBudgets

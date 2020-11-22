@@ -2,13 +2,13 @@ const apiUrl = 'https://interview-api.sbly.com';
 const performanceEndpoint = '/ad-insights';
 const accessToken = 'SHAREABLY_SECRET_TOKEN';
 const adFetchOptions = { headers: { 'Content-Type': 'application/json;charset=utf-8' } };
-const dates = ['2020-01-01', '2020-01-02', '2020-01-03', '2020-01-04', '2020-01-05'];
+export const dates = ['2020-01-01', '2020-01-02', '2020-01-03', '2020-01-04', '2020-01-05'];
 
 function constructUrl(base, endpoint, params = {}) {
     let url = base + endpoint;
 
     let isFirst = true;
-    for (key in params) {
+    for (let key in params) {
         url += (isFirst ? '?' : '&') + key + '=' + params[key];
         isFirst = false;
     }
@@ -16,7 +16,7 @@ function constructUrl(base, endpoint, params = {}) {
     return url;
 }
 
-async function adInsights(date, metrics) {
+export async function adInsights(date, metrics) {
     let url = constructUrl(apiUrl, performanceEndpoint, {
         accessToken: accessToken,
         date: date,
@@ -28,7 +28,7 @@ async function adInsights(date, metrics) {
         .catch(error => console.log(error));
 }
 
-async function currentBudget(id) {
+export async function currentBudget(id) {
     let url = constructUrl(apiUrl, '/ad/' + id, {
         accessToken: accessToken
     });
@@ -38,5 +38,3 @@ async function currentBudget(id) {
         .then(result => result.budget)
         .catch(error => console.log(error));
 }
-
-export default { adInsights, currentBudget, dates }
