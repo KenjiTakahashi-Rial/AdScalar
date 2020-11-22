@@ -4,7 +4,7 @@ const accessToken = 'SHAREABLY_SECRET_TOKEN';
 const adFetchOptions = { headers: { 'Content-Type': 'application/json;charset=utf-8' } };
 const dates = ['2020-01-01', '2020-01-02', '2020-01-03', '2020-01-04', '2020-01-05'];
 
-printResult(nextBudgets());
+printResult(weightedAverages());
 
 // Helper Functions -------------------------------------------------------------------------------
 
@@ -33,17 +33,6 @@ async function adInsights(date, metrics) {
 
     return await fetch(url, adFetchOptions)
         .then(response => response.json())
-        .catch(error => console.log(error));
-}
-
-async function currentBudget(id) {
-    let url = constructUrl(apiUrl, '/ad/' + id, {
-        accessToken: accessToken
-    });
-
-    return await fetch(url, adFetchOptions)
-        .then(response => response.json())
-        .then(result => result.budget)
         .catch(error => console.log(error));
 }
 
@@ -79,4 +68,27 @@ function profitMargin(ad) {
 
 function recencyWeight(dateIndex) {
     return Math.pow(0.5, dates.length - 1 - dateIndex)
+}
+
+async function nextBudgets() {
+    let nextBudgets = {};
+    let weightedAvgs = await weightedAverages();
+
+    for (id in weightedAvgs) {
+        console.log(`id: ${id}, avg: ${weightedAvgs[id]}`);
+        nextBudgets[id] = (1 + weightedAvgs[id]) * (await currentBudget(id));
+    }
+
+    return nextBudgets;
+}
+
+async function currentBudget(id) {
+    let url = constructUrl(apiUrl, '/ad/' + id, {
+        accessToken: accessToken
+    });
+
+    return await fetch(url, adFetchOptions)
+        .then(response => response.json())
+        .then(result => result.budget)
+        .catch(error => console.log(error));
 }
