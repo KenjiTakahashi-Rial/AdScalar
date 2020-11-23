@@ -2,6 +2,7 @@ import { adInsights } from './adApi.js';
 import { currentBudget } from './adApi.js';
 import { dates } from './adApi.js';
 
+// Calculate the averages for all ad insight data across all days
 async function insightAverages(insights) {
     let avgs = {};
     let numAds = insights[0].length;
@@ -27,6 +28,7 @@ async function insightAverages(insights) {
     return avgs;
 }
 
+// Calculate the weighted averages of profit margins for all ads across all days
 async function weightedProfitMargins(insights) {
     let weightedAvgs = {};
     let numAds = insights[0].length;
@@ -49,14 +51,17 @@ async function weightedProfitMargins(insights) {
     return weightedAvgs;
 }
 
+// Calculate an ad's profit margin for a certain day
 function profitMargin(ad) {
     return (ad['revenue'] - ad['spend']) / ad['spend'];
 }
 
+// Calculate a date's recency weight
 function recencyWeight(dateIndex) {
     return Math.pow(0.5, dates.length - 1 - dateIndex)
 }
 
+// Gather all data to be displayed on the table
 async function nextBudgets() {
     let nextBudgets = {};
     let insights = [];
