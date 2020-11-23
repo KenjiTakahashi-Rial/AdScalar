@@ -9,7 +9,11 @@ class AdTable extends Component {
                 'Loading...': {
                     weightedProfitMargin: 'Loading...',
                     currentBudget: 'Loading...',
-                    proposedBudget: 'Loading...'
+                    proposedBudget: 'Loading...',
+                    averageSpending: 'Loading...',
+                    averageRevenue: 'Loading...',
+                    averageImpressions: 'Loading...',
+                    averageClicks: 'Loading...'
                 }
             }
         };
@@ -21,7 +25,6 @@ class AdTable extends Component {
     }
 
     render() {
-        console.log(this.state.ads);
         return (
             <Table responsive>
                 <thead>
@@ -30,15 +33,23 @@ class AdTable extends Component {
                         <th>Weighted Profit Margin</th>
                         <th>Current Budget</th>
                         <th>Proposed Budget</th>
+                        <th>Average Spending</th>
+                        <th>Average Revenue</th>
+                        <th>Average Impressions</th>
+                        <th>Average Clicks</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(this.state.ads).map((entry, index) => (
-                        <tr key={index}>
-                            <td>{entry[0]}</td>
-                            <td>{entry[1]['weightedProfitMargin']}</td>
-                            <td>{entry[1]['currentBudget']}</td>
-                            <td>{entry[1]['proposedBudget']}</td>
+                    {Object.entries(this.state.ads).map(([id, ad]) => (
+                        <tr key={id}>
+                            <td>{id}</td>
+                            <td>{ad['weightedProfitMargin']}</td>
+                            <td>{ad['currentBudget']}</td>
+                            <td>{ad['proposedBudget']}</td>
+                            <td>{ad['averageSpending']}</td>
+                            <td>{ad['averageRevenue']}</td>
+                            <td>{ad['averageImpressions']}</td>
+                            <td>{ad['averageClicks']}</td>
                         </tr>
                     ))}
                 </tbody>
