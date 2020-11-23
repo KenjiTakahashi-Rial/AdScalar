@@ -13,7 +13,7 @@ async function insightAverages(insights) {
         avgs[id] = {};
 
         for (let metric of metrics) {
-            if (metric != 'id') {
+            if (metric !== 'id') {
                 let avg = 0;
 
                 for (let j = 0; j < dates.length; j++) {
