@@ -8,7 +8,7 @@ To run the app just start the server.
 
     $ npm start
 
-The base http://localhost:[port] and http://localhost:[port]/index should both display the app.
+The base url http://localhost:[port] and index http://localhost:[port]/index should both display the app.
 
 I was a little confused on the wording of section [2] of the assignment.
 
