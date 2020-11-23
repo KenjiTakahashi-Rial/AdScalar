@@ -4,11 +4,10 @@ import AdTable from './AdTable.js';
 import nextBudgets from './budgetCalc.js';
 
 function App() {
-    let ads = nextBudgets();
-
     return (
         <div className="App">
-            <AdTable getAdsAsync={ads}/>
+            <h1>Ad Scaler</h1>
+            <AdTable adsPromise={nextBudgets()}/>
         </div>
     );
 }

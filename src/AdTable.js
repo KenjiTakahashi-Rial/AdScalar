@@ -20,7 +20,7 @@ class AdTable extends Component {
     }
 
     async componentDidMount() {
-        let result = await this.props.getAdsAsync;
+        let result = await this.props.adsPromise;
         this.setState({ ads: result });
     }
 
